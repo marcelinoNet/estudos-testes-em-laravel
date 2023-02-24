@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CupomRequest;
 use App\Models\Cupom;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class CupomController extends Controller
      */
     public function index()
     {
-        $cupoms = Cupom::all();
+        $cupoms = Cupom::paginate(10);
         return view("cupom.index", compact("cupoms"));
     }
 
@@ -25,7 +26,7 @@ class CupomController extends Controller
      */
     public function create()
     {
-        //
+        return view("cupom.create");
     }
 
     /**
@@ -34,9 +35,11 @@ class CupomController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CupomRequest $request)
     {
-        //
+        $cupom = $request->validated();
+        Cupom::create($cupom);
+        return redirect()->route('cupom.index');
     }
 
     /**
@@ -58,7 +61,8 @@ class CupomController extends Controller
      */
     public function edit($id)
     {
-        //
+        $cupom = Cupom::find($id);
+        return view("cupom.edit", compact('cupom'));
     }
 
     /**
@@ -68,9 +72,11 @@ class CupomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(CupomRequest $request, $id)
+    {   
+        $req = $request->except("_token","_method");
+        Cupom::where("id",$id)->update($req);
+        return redirect()->route('cupom.index');
     }
 
     /**
@@ -79,8 +85,9 @@ class CupomController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Cupom $cupom)
     {
-        //
+        $cupom->delete();
+        return redirect()->route('cupom.index');
     }
 }

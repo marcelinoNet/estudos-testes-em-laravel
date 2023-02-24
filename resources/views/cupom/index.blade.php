@@ -412,7 +412,7 @@
     <div>
         <h1>All cupoms</h1>
     </div>
-    <button type="button">New Cupom</button>
+    <a href="{{ route('cupom.create') }}" class="btn btn-blue pt-1 d-table"> Novo</a>
 
     @if (count($cupoms) > 0)
     <div class="table">
@@ -422,12 +422,20 @@
                 <th>name</th>
                 <th>descount</th>
                 <th>Expiration date</th>
+                <th>actions</th>
             </tr>
             @foreach ($cupoms as $cupom)
                 <tr>
                     <td>{{ $cupom->name }}</td>
                     <td>{{ $cupom->descount }}</td>
                     <td>{{ $cupom->experation_date }}</td>
+                    <td>
+                        <form action="{{route('cupom.destroy', $cupom)}}" method="post">
+                        @csrf
+                        @method('DELETE')
+                        <button onclick="return confirm('Are you sure?')">delete</button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
 
